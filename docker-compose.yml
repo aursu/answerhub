@@ -1,0 +1,17 @@
+version: "3"
+services:
+  curl:
+    build:
+      context: .
+      dockerfile: centos/7/curl/Dockerfile
+    image: centos:7-curl
+  scm:
+    build:
+      context: .
+      dockerfile: centos/7/scm/Dockerfile
+    image: centos:7-scm
+  jdk:
+    build:
+      context: .
+      dockerfile: centos/7/openjdk/8//Dockerfile
+    image: centos:7-jdk-8
