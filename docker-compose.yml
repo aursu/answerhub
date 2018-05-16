@@ -15,3 +15,7 @@ services:
       context: .
       dockerfile: centos/7/openjdk/8//Dockerfile
     image: centos:7-jdk-8
+  tomcat:
+    build:
+      context: .
+    image: centos:7-tomcat
