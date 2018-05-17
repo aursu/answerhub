@@ -1,0 +1,139 @@
+/usr/lib/jvm/jre/bin/java \
+    -Xmx1300M -Xms784M -XX:MaxPermSize=512m \
+    -classpath /usr/share/tomcat/bin/bootstrap.jar:/usr/share/tomcat/bin/tomcat-juli.jar:/usr/share/java/commons-daemon.jar \
+    -Dcatalina.base=/usr/share/tomcat \
+    -Dcatalina.home=/usr/share/tomcat \
+    -Djava.endorsed.dirs= \
+    -Djava.io.tmpdir=/var/cache/tomcat/temp \
+    -Djava.util.logging.config.file=/usr/share/tomcat/conf/logging.properties \
+    -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager \
+    org.apache.catalina.startup.Bootstrap start
+
+
+1) setup default settings (from configuration file /etc/tomcat/tomcat.conf):
+
+TOMCAT_CFG_LOADED="1"
+TOMCATS_BASE="/var/lib/tomcats/"
+JAVA_HOME="/usr/lib/jvm/jre"
+CATALINA_HOME="/usr/share/tomcat"
+CATALINA_TMPDIR="/var/cache/tomcat/temp"
+SECURITY_MANAGER="false"
+
+2) define single variable (inside Systemd Unit file)
+
+NAME=
+
+3) custom definitions which are empty initially (init system's Tomcat config
+/etc/sysconfig/tomcat)
+
+4) run function _load_java_conf (from /usr/share/java-utils/java-functions).
+
+This function look for file java.conf in all directories defined in variable
+JAVACONFDIRS (with ":" separator like in PATH variable)
+
+Default value:
+
+JAVACONFDIRS=/etc/java
+
+Load file ${HOME}/.java/java.conf if exists
+
+populate next variables on each java.conf:
+
+_javadirs="${_javadirs}${_javadirs:+:}${JAVA_LIBDIR}:${JNI_LIBDIR}"
+_jvmdirs="${_jvmdirs}${_jvmdirs:+:}${JVM_ROOT}"
+
+if nothing defined - sets up default values:
+
+_javadirs=${_javadirs:-/usr/share/java:/usr/lib/java}
+_jvmdirs=${_jvmdirs:-/usr/lib/jvm}
+
+It reads from all java.conf any configuration variables except JAVA_HOME and
+JAVACMD_OPTS
+
+it also checks if JAVA_ABRT not set to 'off' and both
+/usr/lib/abrt-java-connector/libabrt-java-connector.so and
+/var/run/abrt/abrtd.pid files exist. If so it add into JAVACMD_OPTS next option:
+
+-agentpath:/usr/lib/abrt-java-connector/libabrt-java-connector.so=abrt=on
+
+5) _load_java_conf load configuration from /etc/java/java.conf:
+
+JAVA_LIBDIR=/usr/share/java
+JNI_LIBDIR=/usr/lib/java
+JVM_ROOT=/usr/lib/jvm
+
+6) define new function run_java (exact copy of function run() from
+/usr/share/java-utils/java-functions)
+
+7) load all *.conf files from /etc/tomcat/conf.d (initially empty on CentOS 7)
+
+8) Define variable CATALINA_BASE (/usr/libexec/tomcat/preamble)
+
+CATALINA_BASE="${CATALINA_HOME}"
+
+9) if JAVA_HOME is not set - set it (and JVM_ROOT) as 1st existing directory in
+_jvmdirs variable (see 4))
+in this case JAVA_HOME=$JVM_ROOT/jre or JAVA_HOME=$JVM_ROOT/java (depends on flag _prefer_jre)
+
+10) if JAVA_HOME is not set - set it as a result of next sequence of commands
+(if flag _prefer_jre is set - it will try first $(which javac) then -
+$(which java))
+
+cmd=$(which java) 			# -> /usr/bin/java
+cmd=$(readlink -f "${cmd}")		# -> /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-7.b10.el7.x86_64/jre/bin/java
+JAVA_HOME=$(readlink -f "${cmd%/*}"/..) # -> /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-7.b10.el7.x86_64/jre
+
+11) setup variable JAVACMD as first executable of "${JAVA_HOME}"/jre/sh/java
+or "${JAVA_HOME}"/bin/java
+
+12) if JAVACMD is set and executable and if JAVACMD_OPTS is set (see 4) -
+depends on JAVA_ABRT flag) than set:
+
+JAVACMD="/usr/share/java-utils/java-wrapper"
+_JP_JAVACMD="${JAVACMD}"
+_JP_JAVACMD_OPTS="${JAVACMD_OPTS}"
+
+13) if JAVACMD is not set - set it to $(which java)
+
+14) same as 12)
+
+15) CLASSPATH munging (workdir is CATALINA_HOME):
+
+a) accept already defined CLASSPATH (eg in 1) or 3)-5) or 7)) 				# -> empty on CentOS 7 
+b) if JSSE_HOME defined - add extensions jcert, jnet, jsse into CLASSPATH via
+tool /usr/bin/build-classpath (from package javapackages-tools)				# -> JSSE_HOME not defined on CentOS 7
+c) add ${CATALINA_HOME}/bin/bootstrap.jar into CLASSPATH				# -> /usr/share/tomcat/bin/bootstrap.jar
+d) add ${CATALINA_HOME}/bin/tomcat-juli.jar into CLASSPATH				# -> /usr/share/tomcat/bin/tomcat-juli.jar
+e) add commons-daemon extension using /usr/bin/build-classpath				# -> /usr/share/java/commons-daemon.jar
+
+16) define LOGGING_PROPERTIES as
+LOGGING_PROPERTIES="${CATALINA_BASE}/conf/logging.properties"
+and if not exists, than
+LOGGING_PROPERTIES="${CATALINA_HOME}/conf/logging.properties"
+
+17) define MAIN_CLASS, FLAGS and OPTIONS
+
+MAIN_CLASS=org.apache.catalina.startup.Bootstrap
+FLAGS="$JAVA_OPTS"
+OPTIONS="-Dcatalina.base=$CATALINA_BASE \
+-Dcatalina.home=$CATALINA_HOME \
+-Djava.endorsed.dirs=$JAVA_ENDORSED_DIRS \
+-Djava.io.tmpdir=$CATALINA_TMPDIR \
+-Djava.util.logging.config.file=${LOGGING_PROPERTIES} \
+-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager"
+
+18) add CATALINA_OPTS into FLAGS
+
+FLAGS="${FLAGS} $CATALINA_OPTS"
+
+19) check if $SECURITY_MANAGER == "true", than add next options into OPTIONS
+
+-Djava.security.manager -Djava.security.policy==${CATALINA_BASE}/conf/catalina.policy
+
+20) check if $USE_JSVC == "true", than run Tomcat with command $(run_jsvc start),
+otherwise - with command $(run_java start)
+(on CentOS 7 - second option - see 21))
+
+21) exec "${JAVACMD}" ${FLAGS} -classpath "${CLASSPATH}" ${OPTIONS} "${MAIN_CLASS}" start
+
+
