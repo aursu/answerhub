@@ -1,0 +1,19 @@
+Shared Library Files
+
+Like most servlet containers, Tomcat also supports mechanisms to install
+library JAR files (or unpacked classes) once, and make them visible to all
+installed web applications (without having to be included inside the web
+application itself). The details of how Tomcat locates and shares such classes
+are described in the [Class Loader HOW-TO](https://tomcat.apache.org/tomcat-7.0-doc/class-loader-howto.html)
+documentation. The location commonly used within a Tomcat installation for
+shared code is $CATALINA_HOME/lib. JAR files placed here are visible both to
+web applications and internal Tomcat code. This is a good place to put JDBC
+drivers that are required for both your application or internal Tomcat use
+(such as for a JDBCRealm).
+
+Out of the box, a standard Tomcat installation includes a variety of pre-
+installed shared library files, including:
+
+The Servlet 3.0 and JSP 2.2 APIs that are fundamental to writing servlets and
+JavaServer Pages.
+
