@@ -3,6 +3,7 @@ FROM centos:7-jdk-8
 ARG MYSQL_CONN_RPM=mysql-connector-java-8.0.11-1.el7.noarch.rpm
 ARG MYSQL_CONN_URL=https://cdn.mysql.com//Downloads/Connector-J/${MYSQL_CONN_RPM}
 ARG MYSQL_CONN_PATH=/tmp/${MYSQL_CONN_RPM}
+ARG MYSQL_PUBKEY=5072E1F5
 
 ENV TOMCATS_BASE=/var/lib/tomcats/
 ENV JAVA_HOME=/usr/lib/jvm/jre
@@ -29,9 +30,14 @@ RUN yum -y install \
         apache-commons-daemon \
     && yum clean all && rm -rf /var/cache/yum
 
-RUN curl -L ${MYSQL_CONN_URL} -o ${MYSQL_CONN_PATH} \
-    && rpm -ivh ${MYSQL_CONN_PATH} \
-    && rm -f ${MYSQL_CONN_PATH}
+RUN set -e; \
+    curl -L ${MYSQL_CONN_URL} -o ${MYSQL_CONN_PATH}; \
+    gpg --recv-keys --keyserver keys.gnupg.net ${MYSQL_PUBKEY}; \
+    gpg --export -a ${MYSQL_PUBKEY} > ${MYSQL_PUBKEY}.asc; \
+    rpm --import ${MYSQL_PUBKEY}.asc; \
+    rpm -ivh ${MYSQL_CONN_PATH}; \
+    rm -f ${MYSQL_CONN_PATH}; \
+    rm -rf /root/.gnupg
 
 RUN mkdir -p $CATALINA_BASE/webapps
 
