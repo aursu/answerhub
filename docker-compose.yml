@@ -23,4 +23,5 @@ services:
   answerhub:
     build:
       context: .
-    image: centos:7-ah
+      dockerfile: centos/7/answerhub/Dockerfile
+    image: centos:7-answerhub
