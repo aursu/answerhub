@@ -1,30 +1,20 @@
-FROM centos:7-jdk-8
+FROM centos:7-tomcat
 
-ENV TOMCATS_BASE=/var/lib/tomcats/
-ENV JAVA_HOME=/usr/lib/jvm/jre
-ENV CATALINA_HOME=/usr/share/tomcat
-ENV CATALINA_TMPDIR=/var/cache/tomcat/temp
-ENV JAVA_LIBDIR=/usr/share/java
-ENV JNI_LIBDIR=/usr/lib/java
-ENV JVM_ROOT=/usr/lib/jvm
-ENV CATALINA_BASE $CATALINA_HOME
-ENV JAVACMD ${JAVA_HOME}/bin/java
-ENV CLASSPATH ${CLASSPATH}${CLASSPATH:+:}${CATALINA_HOME}/bin/bootstrap.jar:${CATALINA_HOME}/bin/tomcat-juli.jar:${JAVA_LIBDIR}/commons-daemon.jar
-ENV LOGGING_PROPERTIES ${CATALINA_BASE}/conf/logging.properties
+ARG APP_NAME=answerhub
+ARG APP_VERSION=1.6.6
+ARG APP_ROOT=/var/www/answerhub
 
-ENV MAIN_CLASS=org.apache.catalina.startup.Bootstrap
-ENV FLAGS $JAVA_OPTS $CATALINA_OPTS
-ENV OPTIONS -Dcatalina.base=${CATALINA_BASE} -Dcatalina.home=${CATALINA_HOME} \
-    -Djava.endorsed.dirs=${JAVA_ENDORSED_DIRS} -Djava.io.tmpdir=${CATALINA_TMPDIR} \
-    -Djava.util.logging.config.file=${LOGGING_PROPERTIES} \
-    -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+ENV JAVA_OPTS -Xmx1300M -Xms784M -XX:MaxPermSize=512m
 
-RUN yum -y install \
-        tomcat \
-        tomcat-lib \
-        apache-commons-daemon \
-    && yum clean all && rm -rf /var/cache/yum
+USER root
 
-USER tomcat
+RUN mkdir $APP_ROOT \
+    && chown -R tomcat $APP_ROOT \
+    && ln -s ${APP_ROOT}/teamhub.war $CATALINA_BASE/webapps/ROOT
+
+COPY answerhub-${AH_VERSION} /var/www/answerhub
+
+RUN chown -R tomcat /var/www/answerhub \
+    && find
+
 WORKDIR $CATALINA_HOME
-CMD "${JAVACMD}" ${FLAGS} -classpath "${CLASSPATH}" ${OPTIONS} "${MAIN_CLASS}" start
