@@ -18,4 +18,9 @@ services:
   tomcat:
     build:
       context: .
+      dockerfile: centos/7/tomcat/Dockerfile
     image: centos:7-tomcat
+  answerhub:
+    build:
+      context: .
+    image: centos:7-ah
