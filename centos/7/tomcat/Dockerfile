@@ -1,5 +1,9 @@
 FROM centos:7-jdk-8
 
+ARG MYSQL_CONN_RPM=mysql-connector-java-8.0.11-1.el7.noarch.rpm
+ARG MYSQL_CONN_URL=https://cdn.mysql.com//Downloads/Connector-J/${MYSQL_CONN_RPM}
+ARG MYSQL_CONN_PATH=/tmp/${MYSQL_CONN_RPM}
+
 ENV TOMCATS_BASE=/var/lib/tomcats/
 ENV JAVA_HOME=/usr/lib/jvm/jre
 ENV CATALINA_HOME=/usr/share/tomcat
@@ -24,6 +28,12 @@ RUN yum -y install \
         tomcat-lib \
         apache-commons-daemon \
     && yum clean all && rm -rf /var/cache/yum
+
+RUN curl -L ${MYSQL_CONN_URL} -o ${MYSQL_CONN_PATH} \
+    && rpm -ivh ${MYSQL_CONN_PATH} \
+    && rm -f ${MYSQL_CONN_PATH}
+
+RUN mkdir -p $CATALINA_BASE/webapps
 
 USER tomcat
 WORKDIR $CATALINA_HOME
