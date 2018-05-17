@@ -6,6 +6,7 @@ ARG APP_ROOT=/var/www/${APP_NAME}
 ARG APP_WAR=$APP_ROOT/teamhub.war
 
 ENV JAVA_OPTS -Xmx1300M -Xms784M -XX:MaxPermSize=512m
+ENV CATALINA_OPTS -Dteamhub.home=${APP_ROOT}/teamhub.home
 
 USER root
 

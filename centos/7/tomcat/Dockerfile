@@ -18,7 +18,6 @@ ENV CLASSPATH ${CLASSPATH}${CLASSPATH:+:}${CATALINA_HOME}/bin/bootstrap.jar:${CA
 ENV LOGGING_PROPERTIES ${CATALINA_BASE}/conf/logging.properties
 
 ENV MAIN_CLASS=org.apache.catalina.startup.Bootstrap
-ENV FLAGS $JAVA_OPTS $CATALINA_OPTS
 ENV OPTIONS -Dcatalina.base=${CATALINA_BASE} -Dcatalina.home=${CATALINA_HOME} \
     -Djava.endorsed.dirs=${JAVA_ENDORSED_DIRS} -Djava.io.tmpdir=${CATALINA_TMPDIR} \
     -Djava.util.logging.config.file=${LOGGING_PROPERTIES} \
@@ -43,4 +42,4 @@ RUN mkdir -p $CATALINA_BASE/webapps
 
 USER tomcat
 WORKDIR $CATALINA_HOME
-CMD "${JAVACMD}" ${FLAGS} -classpath "${CLASSPATH}" ${OPTIONS} "${MAIN_CLASS}" start
+CMD "${JAVACMD}" ${JAVA_OPTS} ${CATALINA_OPTS} -classpath "${CLASSPATH}" ${OPTIONS} "${MAIN_CLASS}" start
