@@ -29,9 +29,8 @@ services:
     build:
       context: .
     image: centos:7-answerhub-env
-    ports:
-      - "8080:8080"
+    network_mode: "host"
     env_file:
       - secrets/test.env
     environment:
-      CATALINA_OPTS: -Ddatabase.url=172.17.0.1 -Ddatabase.name=answerhub -Ddatabase.user=answerhub
+      CATALINA_OPTS: -Ddatabase.url=127.0.0.1 -Ddatabase.name=answerhub -Ddatabase.user=answerhub
