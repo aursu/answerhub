@@ -18,10 +18,11 @@ ENV JAVACMD ${JAVA_HOME}/bin/java
 ENV LOGGING_PROPERTIES ${CATALINA_BASE}/conf/logging.properties
 
 RUN yum -y install \
-        tomcat \
-        tomcat-lib \
         apache-commons-daemon \
         javapackages-tools \
+        mysql \
+        tomcat \
+        tomcat-lib \
     && yum clean all && rm -rf /var/cache/yum
 
 RUN set -e; \
