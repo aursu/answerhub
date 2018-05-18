@@ -7,12 +7,6 @@ else
     exit 1
 fi
 
-_save_function() {
-    local ORIG_FUNC=$(declare -f $1)
-    local NEWNAME_FUNC="$2${ORIG_FUNC#$1}"
-    eval "$NEWNAME_FUNC"
-}
-
 run_jsvc(){
     if [ -x /usr/bin/jsvc ]; then
         TOMCAT_USER="${TOMCAT_USER:-tomcat}"
@@ -29,12 +23,12 @@ run_jsvc(){
     fi
 }
 
-_save_function run run_java
-
 run() {
     if [ "${USE_JSVC}" = "true" ] ; then
         run_jsvc $@
     else
-        run_java $@
+        set_javacmd
+        "${JAVACMD}" ${FLAGS} -classpath "${CLASSPATH}" \
+            ${OPTIONS} "${MAIN_CLASS}" "${@}"
     fi
 }
