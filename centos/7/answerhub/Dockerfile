@@ -2,13 +2,12 @@ FROM centos:7-tomcat
 
 ARG APP_NAME=answerhub
 ARG APP_VERSION=1.6.6
-ARG APP_ROOT=/var/www/${APP_NAME}
+ENV APP_ROOT=/var/www/answerhub
 ARG APP_WAR=$APP_ROOT/teamhub.war
 
-ENV JAVA_OPTS -Xmx1300M -Xms784M -XX:MaxPermSize=512m
-ENV CATALINA_OPTS -Dteamhub.home=${APP_ROOT}/teamhub.home
-
 USER root
+
+COPY centos/system/etc/tomcat/conf.d/answerhub.conf /etc/tomcat/conf.d/answerhub.conf
 
 # create default context
 RUN mkdir -p $APP_ROOT \
