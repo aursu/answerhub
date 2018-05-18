@@ -1,9 +1,9 @@
 FROM centos:7-jdk-8
 
-ARG MYSQL_CONN_RPM=mysql-connector-java-8.0.11-1.el7.noarch.rpm
-ARG MYSQL_CONN_URL=https://cdn.mysql.com//Downloads/Connector-J/${MYSQL_CONN_RPM}
-ARG MYSQL_CONN_PATH=/tmp/${MYSQL_CONN_RPM}
-ARG MYSQL_PUBKEY=5072E1F5
+ARG MYSQL_CONN_NAME=mysql-connector-java-5.1.46
+ARG MYSQL_CONN_ARCH=${MYSQL_CONN_NAME}.tar.gz
+ARG MYSQL_CONN_URL=https://cdn.mysql.com//Downloads/Connector-J/${MYSQL_CONN_ARCH}
+ARG MYSQL_CONN_PATH=/tmp/${MYSQL_CONN_ARCH}
 
 ENV JAVA_ABRT=off
 ENV TOMCATS_BASE=/var/lib/tomcats/
@@ -25,14 +25,12 @@ RUN yum -y install \
         tomcat-lib \
     && yum clean all && rm -rf /var/cache/yum
 
-RUN set -e; \
+RUN set -ex; \
     curl -L ${MYSQL_CONN_URL} -o ${MYSQL_CONN_PATH}; \
-    gpg --recv-keys --keyserver keys.gnupg.net ${MYSQL_PUBKEY}; \
-    gpg --export -a ${MYSQL_PUBKEY} > ${MYSQL_PUBKEY}.asc; \
-    rpm --import ${MYSQL_PUBKEY}.asc; \
-    rpm -ivh ${MYSQL_CONN_PATH}; \
-    rm -f ${MYSQL_CONN_PATH}; \
-    rm -rf /root/.gnupg
+    tar zxf ${MYSQL_CONN_PATH} -C /tmp; \
+    mv /tmp/${MYSQL_CONN_NAME}/${MYSQL_CONN_NAME}-bin.jar ${JAVA_LIBDIR}; \
+    ln -s ${JAVA_LIBDIR}/${MYSQL_CONN_NAME}-bin.jar ${CATALINA_BASE}/lib/mysql.jar; \
+    rm -rf ${MYSQL_CONN_PATH} /tmp/${MYSQL_CONN_NAME}
 
 # switch from eval() call to exec() inside run() function
 COPY centos/system/usr/libexec/tomcat/functions /usr/libexec/tomcat/functions
