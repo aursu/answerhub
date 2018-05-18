@@ -25,3 +25,11 @@ services:
       context: .
       dockerfile: centos/7/answerhub/Dockerfile
     image: centos:7-answerhub
+  answerhub-test:
+    build:
+      context: .
+    image: centos:7-answerhub-env
+    env_file:
+      - secrets/test.env
+    environment:
+      CATALINA_OPTS: -Ddatabase.url=172.17.3.15 -Ddatabase.name=answerhub -Ddatabase.user=answerhub
