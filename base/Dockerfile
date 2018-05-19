@@ -12,7 +12,7 @@ USER root
 # http://docs.dzonesoftware.com/articles/13577/verify-and-configure-tomcat-settings-2.html
 # and teamhub.home and teamhub.forceSetup acording to
 # http://docs.dzonesoftware.com/articles/13569/install-and-configure-mysql-database-support-2.html
-COPY centos/system/etc/tomcat/conf.d/answerhub.conf /etc/tomcat/conf.d/answerhub.conf
+COPY system/etc/tomcat/conf.d/answerhub.conf /etc/tomcat/conf.d/answerhub.conf
 
 # create default Context
 RUN mkdir -p $APP_ROOT \
