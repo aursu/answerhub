@@ -22,13 +22,12 @@ services:
     image: centos:7-tomcat
   answerhub:
     build:
-      context: .
-      dockerfile: centos/7/answerhub/Dockerfile
-    image: centos:7-answerhub
+      context: base
+    image: centos:7-answerhub-base
   answerhub-test:
     build:
-      context: .
-    image: centos:7-answerhub-env
+      context: custom
+    image: centos:7-answerhub
     network_mode: "host"
     env_file:
       - secrets/test.env
