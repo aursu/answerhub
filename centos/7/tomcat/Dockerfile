@@ -32,7 +32,7 @@ RUN set -ex; \
     ln -s ${JAVA_LIBDIR}/${MYSQL_CONN_NAME}-bin.jar ${CATALINA_BASE}/lib/mysql.jar; \
     rm -rf ${MYSQL_CONN_PATH} /tmp/${MYSQL_CONN_NAME}
 
-# switch from eval() call to exec() inside run() function
+# switch from eval() call to exec() inside run() function to support Docker
 COPY centos/system/usr/libexec/tomcat/functions /usr/libexec/tomcat/functions
 
 RUN mkdir -p $CATALINA_BASE/webapps
