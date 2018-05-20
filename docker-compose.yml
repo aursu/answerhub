@@ -23,11 +23,11 @@ services:
   answerhub:
     build:
       context: base
-    image: centos:7-answerhub-base
+    image: answerhub:base
   answerhub-test:
     build:
       context: custom
-    image: centos:7-answerhub
+    image: answerhub:custom
     network_mode: "host"
     env_file:
       - secrets/test.env
