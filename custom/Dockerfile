@@ -7,11 +7,11 @@ COPY system/etc/tomcat/conf.d/answerhub-mysql.conf /etc/tomcat/conf.d/answerhub-
 RUN echo -n > $APP_CONFIG_PROPERTIES
 
 # license installation
-COPY update/teamhub.home/sites $APP_ROOT/teamhub.home/sites
+COPY update/sites $APP_ROOT/teamhub.home/sites
 RUN chown -R tomcat:tomcat $APP_ROOT/teamhub.home/sites
 
 # custom themes installation
-COPY update/teamhub.home/themes $APP_ROOT/teamhub.home/themes
+COPY update/themes $APP_ROOT/teamhub.home/themes
 RUN chown -R tomcat:tomcat $APP_ROOT/teamhub.home/themes
 
 USER tomcat
