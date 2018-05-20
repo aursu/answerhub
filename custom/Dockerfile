@@ -1,4 +1,4 @@
-FROM centos:7-answerhub-base
+FROM answerhub:base
 
 USER root
 
