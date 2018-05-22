@@ -27,6 +27,8 @@ services:
        APP_VERSION: 1.6.6
     image: answerhub:base
   answerhub-test:
+    volumes:
+      - sites:/var/www/answerhub/teamhub.home/sites
     build:
       context: custom
     image: answerhub:custom
@@ -35,3 +37,6 @@ services:
       - secrets/test.env
     environment:
       CATALINA_OPTS: -Ddatabase.url=127.0.0.1 -Ddatabase.name=answerhub -Ddatabase.user=answerhub
+
+volumes:
+  sites:
