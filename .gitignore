@@ -1,3 +1,8 @@
 /base/answerhub-*
-/custom/update
+/custom/update/themes/*
+!/custom/update/themes/.gitkeep
+/custom/update/sites/*
+!/custom/update/sites/.gitkeep
+/custom/update/plugins/installed/*
+!/custom/update/plugins/installed/.gitkeep
 /secrets/*.env
