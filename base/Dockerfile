@@ -1,4 +1,4 @@
-FROM centos:7-tomcat
+FROM aursu/centos:tomcat
 
 ARG APP_NAME=answerhub
 ARG APP_VERSION=1.6.6
