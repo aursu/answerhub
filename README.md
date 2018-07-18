@@ -9,7 +9,7 @@ or as argument `--build-arg` to `docker-compose build` command) to version X.Y.Z
 from previous step
 
 3) following instructions from manual [Upgrade On-Premise Installation](http://docs.dzonesoftware.com/articles/13580/upgrade-on-premise-installation-2.html)
-copy your custom themes and `sites` folder into `custom/update/themes` and
+copy your custom `plugins`, `themes` and `sites` folder into `custom/update/plugins`, `custom/update/themes` and
 `custom/update/sites` accordingly
 
 4) push database password into `.env` file inside `secrets` folder. For example,
