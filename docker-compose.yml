@@ -11,8 +11,6 @@ services:
       - sites:/var/www/answerhub/teamhub.home/sites
     build:
       context: custom
-    depends_on:
-      - answerhub
     image: answerhub:custom
     network_mode: "host"
     env_file:
