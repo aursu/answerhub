@@ -26,7 +26,12 @@ be in original form - not escaped)
 6) setup `database.url`, `database.user` and `database.name` into `CATALINA_OPTS`
 inside `docker-compose.yml`
 
-7) run `docker-compose build`
+7) build images (`answerhub-test` is just example - please setups your own service with proper environment settings):
+
+```
+docker-compose build answerhub
+docker-compose build answerhub-test
+```
 
 8) run `docker-compose up -d <service name>`
 
