@@ -9,7 +9,7 @@ or as argument `--build-arg` to `docker-compose build` command) to version X.Y.Z
 from previous step
 
 3) following instructions from manual [Upgrade On-Premise Installation](http://docs.dzonesoftware.com/articles/13580/upgrade-on-premise-installation-2.html)
-copy your custom themes and `sites` folder into `custom/update/themes` and
+copy your custom `plugins`, `themes` and `sites` folder into `custom/update/plugins`, `custom/update/themes` and
 `custom/update/sites` accordingly
 
 4) push database password into `.env` file inside `secrets` folder. For example,
@@ -26,7 +26,12 @@ be in original form - not escaped)
 6) setup `database.url`, `database.user` and `database.name` into `CATALINA_OPTS`
 inside `docker-compose.yml`
 
-7) run `docker-compose build`
+7) build images (`answerhub-test` is just example - please setups your own service with proper environment settings):
+
+```
+docker-compose build answerhub
+docker-compose build answerhub-test
+```
 
 8) run `docker-compose up -d <service name>`
 
