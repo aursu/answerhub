@@ -1,0 +1,12 @@
+version: "3"
+services:
+  answerhub-base:
+    build:
+      context: base
+      args:
+       APP_VERSION: 1.6.6
+    image: registry.crylan.com/answerhub:1.6.6-base-2
+  answerhub-build:
+    build:
+      context: custom
+    image: registry.crylan.com/answerhub:1.6.6-custom-2

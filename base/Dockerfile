@@ -5,6 +5,7 @@ ARG APP_VERSION=1.6.6
 ENV APP_ROOT=/var/www/answerhub
 ENV APP_WAR=$APP_ROOT/teamhub.war
 ENV APP_CONFIG_PROPERTIES=${APP_WAR}/WEB-INF/classes/META-INF/config.properties
+ENV LANG=en_US.UTF-8
 
 USER root
 

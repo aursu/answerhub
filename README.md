@@ -29,8 +29,8 @@ inside `docker-compose.yml`
 7) build images (`answerhub-test` is just example - please setups your own service with proper environment settings):
 
 ```
-docker-compose build answerhub
-docker-compose build answerhub-test
+docker-compose -f docker-compose.utility.yml build answerhub-base
+docker-compose -f docker-compose.utility.yml build answerhub-build
 ```
 
 8) run `docker-compose up -d <service name>`
@@ -39,16 +39,10 @@ docker-compose build answerhub-test
 
 ```
 services:
-  answerhub:
-    build:
-      context: base
-      args:
-       APP_VERSION: 1.6.6
-    image: answerhub:base
   answerhub-test:
     build:
       context: custom
-    image: answerhub:custom
+    image: registry.company.tld/answerhub:1.6.6-custom-2
     network_mode: "host"
     env_file:
       - secrets/test.env
