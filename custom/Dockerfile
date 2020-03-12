@@ -1,4 +1,4 @@
-FROM answerhub:base
+FROM registry.company.tld/answerhub:1.6.6-base-2
 
 USER root
 
@@ -16,6 +16,7 @@ COPY update/themes $APP_ROOT/teamhub.home/themes
 
 # additional plugins installation
 COPY update/plugins $APP_ROOT/teamhub.home/plugins
+
 RUN mkdir -p /var/lib/answerhub/search_index \
     && chown -R tomcat:tomcat $APP_ROOT/teamhub.home/themes \
     $APP_ROOT/teamhub.home/sites \

@@ -40,8 +40,6 @@ docker-compose -f docker-compose.utility.yml build answerhub-build
 ```
 services:
   answerhub-test:
-    build:
-      context: custom
     image: registry.company.tld/answerhub:1.6.6-custom-2
     network_mode: "host"
     env_file:
