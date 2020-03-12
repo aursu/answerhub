@@ -16,11 +16,13 @@ COPY update/themes $APP_ROOT/teamhub.home/themes
 
 # additional plugins installation
 COPY update/plugins $APP_ROOT/teamhub.home/plugins
-RUN chown -R tomcat:tomcat $APP_ROOT/teamhub.home/themes \
+RUN mkdir -p /var/lib/answerhub/search_index \
+    && chown -R tomcat:tomcat $APP_ROOT/teamhub.home/themes \
     $APP_ROOT/teamhub.home/sites \
-    $APP_ROOT/teamhub.home/plugins
+    $APP_ROOT/teamhub.home/plugins \
+    /var/lib/answerhub/search_index
 
-VOLUME $APP_ROOT/teamhub.home/sites
+VOLUME $APP_ROOT/teamhub.home/sites /var/lib/answerhub/search_index
 
 USER tomcat
 WORKDIR $CATALINA_HOME
